@@ -52,12 +52,12 @@ class Partenaire
 
     public function getNumeroCompte(): ?string
     {
-        return $this->nomeroCompte;
+        return $this->numeroCompte;
     }
 
-    public function setNumeroCompte(string $nomeroCompte): self
+    public function setNumeroCompte(string $numeroCompte): self
     {
-        $this->nomeroCompte = $nomeroCompte;
+        $this->numeroCompte = $numeroCompte;
 
         return $this;
     }

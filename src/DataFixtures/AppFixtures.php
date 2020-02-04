@@ -47,7 +47,6 @@ class AppFixtures extends Fixture
         $user1->setAdresse("Dakar");
         $user1->setTelephone(777744555);
         $user1->setEmail("Diak1@gmail.com");
-        $user1->setNin(7744555);
         //var_dump($user1->getRoles());die();
        //$user1->setIsActive("active");
         $manager->persist($user1);    
