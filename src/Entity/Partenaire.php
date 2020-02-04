@@ -3,11 +3,13 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ApiResource()
  * @ORM\Entity(repositoryClass="App\Repository\PartenaireRepository")
+ * @ApiResource()
  */
 class Partenaire
 {
@@ -21,6 +23,11 @@ class Partenaire
     /**
      * @ORM\Column(type="string", length=255)
      */
+    private $numeroCompte;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
     private $ninea;
 
     /**
@@ -29,13 +36,30 @@ class Partenaire
     private $rc;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\OneToMany(targetEntity="App\Entity\User", mappedBy="partenaire")
      */
-    private $nin;
+    private $user;
+
+    public function __construct()
+    {
+        $this->user = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getNumeroCompte(): ?string
+    {
+        return $this->nomeroCompte;
+    }
+
+    public function setNumeroCompte(string $nomeroCompte): self
+    {
+        $this->nomeroCompte = $nomeroCompte;
+
+        return $this;
     }
 
     public function getNinea(): ?string
@@ -62,15 +86,38 @@ class Partenaire
         return $this;
     }
 
-    public function getNin(): ?int
+    /**
+     * @return Collection|User[]
+     */
+    public function getUser(): Collection
     {
-        return $this->nin;
+        return $this->user;
     }
 
-    public function setNin(int $nin): self
+    public function addUser(User $user): self
     {
-        $this->nin = $nin;
+        if (!$this->user->contains($user)) {
+            $this->user[] = $user;
+            $user->setPartenaire($this);
+        }
 
         return $this;
     }
+
+    public function removeUser(User $user): self
+    {
+        if ($this->user->contains($user)) {
+            $this->user->removeElement($user);
+            // set the owning side to null (unless already changed)
+            if ($user->getPartenaire() === $this) {
+                $user->setPartenaire(null);
+            }
+        }
+
+        return $this;
+    }
+
+   
+
+
 }

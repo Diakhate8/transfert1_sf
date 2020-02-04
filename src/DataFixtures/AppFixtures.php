@@ -30,13 +30,12 @@ class AppFixtures extends Fixture
         $role_caissier->setLibelle("ROLE_CAISSIER");
         $manager->persist($role_caissier);
 
-        $this->addReference('role_admin_system',$role_admin_system);
-        $this->addReference('role_admin',$role_admin);
-        $this->addReference('role_caissier',$role_caissier);
-        
+        $role_partenaire = new Role();
+        $role_partenaire->setLibelle("ROLE_PARTENAIRE");
+        $manager->persist($role_partenaire);
+
+        $this->addReference('role_admin_system',$role_admin_system);        
         $roleAdmdinSystem = $this->getReference('role_admin_system');
-        $roleAdmin = $this->getReference('role_admin');
-        $roleCaissier = $this->getReference('role_caissier');
 
         $user1 = new User();
         $user1->setUsername("AdminSys");
@@ -51,21 +50,7 @@ class AppFixtures extends Fixture
         $user1->setNin(7744555);
         //var_dump($user1->getRoles());die();
        //$user1->setIsActive("active");
-        $manager->persist($user1);
-        
-        $admin = new User();
-        $admin->setUsername("Admin");
-        $admin->setPassword($this->encoder->encodePassword($admin, "admin"));
-        $admin->setPrenom("Amadou");
-        $admin->setNom("Diop");
-        $admin->setAdresse("Dakar");
-        $admin->setEmail("Diop1@gmail.com");
-        $admin->setTelephone(777744556);
-        $admin->setNin(77744555);
-        $admin->setRole($roleAdmin);
-        //var_dump($admin->getisActive());die();
-
-        $manager->persist($admin);      
+        $manager->persist($user1);    
         
         $manager->flush();
         

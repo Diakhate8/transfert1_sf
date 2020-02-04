@@ -36,7 +36,7 @@ class UserVoter extends Voter implements VoterInterface
             //My conditions
         if($userOnLine->getRoles()[0]===self::ADMIN_SYS && 
         $subject->getRoles()[0] !== self::ADMIN_SYS ){
-            dd( $subject->getRoles()[0]);
+            //dd( $subject->getRoles()[0]);
 
             return true;
 
@@ -60,12 +60,10 @@ class UserVoter extends Voter implements VoterInterface
                 // return true or false
                 break;
             case 'CAN_VIEW':
-                // logic to determine if the user can VIEW
-                // return true or false
-                
+   
+                break;   
+            default:
                 break;
-            default;
-        
         }
 
         return false;

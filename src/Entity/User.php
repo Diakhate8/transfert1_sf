@@ -3,24 +3,32 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Security\Core\User\UserInterface;
-
-
-
+use Symfony\Component\Security\Core\User\AdvancedUserInterface;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @ApiResource(
- *     collectionOperations={
- *         "get",
- *         "post"={"access_control"="is_granted('CAN_POST', object )"}
- *     },
  *     itemOperations={
- *         "get",
- *         "delete",
- *         "post"={"access_control"="is_granted('CAN_POST', object )"} 
+ *          "get"={
+ *              "normalization_context"={"groups"={"user:read", "user:item:get"}},
+ *          },
+ *          "put"={
+ *              "access_control"="is_granted('CAN_POST', object)",
+ *              "access_control_message"="Accés non autorisé"
+ *          },
+ *          "delete"={"access_control"="is_granted('CAN_POST',object)"}
+ *     },
+ *     collectionOperations={
+ *          "get"={"access_control"="is_granted('ROLE_ADMIN')"},
+ *          "post"={"access_control"="is_granted('CAN_POST',object)"}
  *     }
  * )
+ * @ApiResource(iri="http://schema.org/User")
  */
 class User implements UserInterface
 {
@@ -28,11 +36,13 @@ class User implements UserInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"post:read", "post:write"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"post:read", "post:write"})
      */
     private $prenom;
 
@@ -43,37 +53,38 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"post:read", "post:write"})
      */
     private $adresse;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"post:read", "post:write"})
      */
     private $telephone;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"post:read", "post:write"})
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"post:read", "post:write"})
      */
     private $username;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"post:read", "post:write"})
      */
     private $password;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $nin;
-
-    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Role", inversedBy="users")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"post:read", "post:write"})
      */
     private $role;
 
@@ -81,9 +92,25 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="boolean")
+     * @Groups({"post:read", "post:write"})
      */
     private $isActive;
 
+    /**
+     * @var MediaObject|null
+     *
+     * @ORM\ManyToOne(targetEntity=MediaObject::class)
+     * @ORM\JoinColumn(nullable=true)
+     * @ApiProperty(iri="http://schema.org/image")
+     */
+    public $image;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Partenaire", inversedBy="user")
+     */
+    private $partenaire;
+
+    
     public function __construct()
     {
         $this->isActive = true;
@@ -178,18 +205,6 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getNin(): ?int
-    {
-        return $this->nin;
-    }
-
-    public function setNin(int $nin): self
-    {
-        $this->nin = $nin;
-
-        return $this;
-    }
-
     public function getRole(): ?Role
     {
         return $this->role;
@@ -201,13 +216,13 @@ class User implements UserInterface
 
         return $this;
     }
-     /**
+
+    /**
      * @see UserInterface
      */
     public function getRoles(): array
     {
         // guarantee every user at least has ROLE_.... 
-        //return [strtoupper($this->role->getLibelle())];
         return $this->roles = [strtoupper($this->getRole()->getLibelle())];
     }
 
@@ -236,8 +251,6 @@ class User implements UserInterface
      */
     public function eraseCredentials()
     {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
         return true;
     }
     public function isAccountNonExpired(){
@@ -252,5 +265,20 @@ class User implements UserInterface
     public function isEnabled(){
         return $this->isActive;
     }
+
+    public function getPartenaire(): ?Partenaire
+    {
+        return $this->partenaire;
+    }
+
+    public function setPartenaire(?Partenaire $partenaire): self
+    {
+        $this->partenaire = $partenaire;
+
+        return $this;
+    }
+
+
+
 
 }
