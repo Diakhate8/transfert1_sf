@@ -18,7 +18,7 @@ class UserController extends AbstractController
      */
     public function showUser(UserRepository $postRepo)
     {
-        return $this->json($postRepo->findAll(), 200, [],['groups'=> 'post:read']);
+        // return $this->json($postRepo->findAll(), 200, [],['groups'=> 'post:read']);
     }
     // /**
     //  * @Route("/user", name="user.add", methods={"Post"})

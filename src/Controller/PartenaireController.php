@@ -5,15 +5,13 @@ namespace App\Controller;
 use App\Entity\Role;
 use App\Entity\User;
 use App\Entity\Partenaire;
-use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-
 /**
  * @Route("/api")
  */
@@ -41,11 +39,14 @@ class PartenaireController extends AbstractController
                 $user = new User();
 
                 //creation de  new partenaire
+                $repo_partenaire = $this->getDoctrine()->getRepository(Partenaire::class);
+                $partenaire_id = $repo_partenaire->findOneBy(array("id" => $this->getLastId()));
+
                 $partenaire->setNumeroCompte($donneeRecu->numeroCompte);
                 $partenaire->setNinea($donneeRecu->ninea);
                 $partenaire->setRc($donneeRecu->rc);
                 $em->persist($partenaire);
-
+                $em->flush();
                 
                 //creationn de  new user
                     // rolepartenaire
@@ -61,7 +62,7 @@ class PartenaireController extends AbstractController
             $user->setEmail($donneeRecu->email);
             $user->setUsername($donneeRecu->username);
             $user->setPassword($donneeRecu->password);
-
+            $user->setPartenaire($partenaire_id);
             $em->persist($user);
             $em->flush();
 
@@ -69,10 +70,22 @@ class PartenaireController extends AbstractController
                 "status" => 201,
                 "message" => " Partenaire Creer avec succes"              
             ];
-                return new JsonReponse($data, 201);
+            return new JsonResponse($data, 201);
 
     }
 
+    public function getLastId() 
+    {
+        $repository = $this->getDoctrine()->getRepository(Partenaire::class);
+        // look for a single Product by name
+        $res = $repository->findBy(array(), array('id' => 'DESC')) ;
+        if($res == null){
+            return 0;
+        }else{
+            return $res[0]->getId();
+        }
+        
+    }
 
 
 }
