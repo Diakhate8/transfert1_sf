@@ -19,11 +19,6 @@ class Depot
     private $id;
 
     /**
-     * @ORM\Column(type="datetime")
-     */
-    private $createdAt;
-
-    /**
      * @ORM\Column(type="string", length=255)
      */
     private $numeroCompte;
@@ -31,40 +26,22 @@ class Depot
     /**
      * @ORM\Column(type="integer")
      */
-    private $soldeDepot;
+    private $montantDepot;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $createdAt;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Compte", inversedBy="depot")
+     * @ORM\JoinColumn(nullable=false)
      */
     private $compte;
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getCreatedAt(): ?\DateTimeInterface
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    public function getSoldeDepot(): ?int
-    {
-        return $this->soldeDepot;
-    }
-
-    public function setSoldeDepot(int $soldeDepot): self
-    {
-        $this->soldeDepot = $soldeDepot;
-
-        return $this;
     }
 
     public function getNumeroCompte(): ?string
@@ -75,6 +52,30 @@ class Depot
     public function setNumeroCompte(string $numeroCompte): self
     {
         $this->numeroCompte = $numeroCompte;
+
+        return $this;
+    }
+
+    public function getMontantDepot(): ?int
+    {
+        return $this->montantDepot;
+    }
+
+    public function setMontantDepot(int $montantDepot): self
+    {
+        $this->montantDepot = $montantDepot;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }
@@ -90,6 +91,4 @@ class Depot
 
         return $this;
     }
-
-
 }

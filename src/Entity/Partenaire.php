@@ -8,8 +8,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\PartenaireRepository")
  * @ApiResource()
+ * @ORM\Entity(repositoryClass="App\Repository\PartenaireRepository")
  */
 class Partenaire
 {
@@ -19,11 +19,6 @@ class Partenaire
      * @ORM\Column(type="integer")
      */
     private $id;
-
-    /**
-     * @ORM\Column(type="string", length=255, unique=true)
-     */
-    private $numeroCompte;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -47,24 +42,13 @@ class Partenaire
 
     public function __construct()
     {
+        $this->user = new ArrayCollection();
         $this->compte = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getNumeroCompte(): ?string
-    {
-        return $this->numeroCompte;
-    }
-
-    public function setNumeroCompte(string $numeroCompte): self
-    {
-        $this->numeroCompte = $numeroCompte;
-
-        return $this;
     }
 
     public function getNinea(): ?string
@@ -152,6 +136,4 @@ class Partenaire
 
         return $this;
     }
-
-
 }

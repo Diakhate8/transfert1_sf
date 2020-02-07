@@ -14,7 +14,7 @@ class CompteGenerator{
          if($lastcompte != null){
              $lastid = $lastcompte->getId();
              
-              $this->nbCompte = sprintf("%'.05d", $lastid);         
+              $this->nbCompte = sprintf("%'.05d", $lastid+1);         
  
          }else{
              //commencer au debut enlever un 0 et le remplacer par 1

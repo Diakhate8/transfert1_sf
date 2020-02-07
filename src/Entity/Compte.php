@@ -21,30 +21,20 @@ class Compte
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255, unique=true)
+     * @ORM\Column(type="string", length=255)
      */
     private $numeroCompte;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $ninea;
-
-
-    /**
      * @ORM\Column(type="integer")
      */
-    private $SoldeInitial;
+    private $soldeInitial;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Partenaire", inversedBy="compte")
+     * @ORM\JoinColumn(nullable=false)
      */
     private $partenaire;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private $createdAt;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Depot", mappedBy="compte")
@@ -73,26 +63,14 @@ class Compte
         return $this;
     }
 
-    public function getNinea(): ?string
-    {
-        return $this->ninea;
-    }
-
-    public function setNinea(string $ninea): self
-    {
-        $this->ninea = $ninea;
-
-        return $this;
-    }
-
     public function getSoldeInitial(): ?int
     {
-        return $this->SoldeInitial;
+        return $this->soldeInitial;
     }
 
-    public function setSoldeInitial(int $SoldeInitial): self
+    public function setSoldeInitial(int $soldeInitial): self
     {
-        $this->SoldeInitial = $SoldeInitial;
+        $this->soldeInitial = $soldeInitial;
 
         return $this;
     }
@@ -105,18 +83,6 @@ class Compte
     public function setPartenaire(?Partenaire $partenaire): self
     {
         $this->partenaire = $partenaire;
-
-        return $this;
-    }
-
-    public function getCreatedAt(): ?\DateTimeInterface
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
-    {
-        $this->createdAt = $createdAt;
 
         return $this;
     }
@@ -151,5 +117,4 @@ class Compte
 
         return $this;
     }
-
 }

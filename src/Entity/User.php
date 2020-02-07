@@ -109,8 +109,7 @@ class User implements UserInterface
      * @ORM\ManyToOne(targetEntity="App\Entity\Partenaire", inversedBy="user")
      */
     private $partenaire;
-
-    
+   
     public function __construct()
     {
         $this->isActive = true;
@@ -277,8 +276,6 @@ class User implements UserInterface
 
         return $this;
     }
-
-
 
 
 }

@@ -21,47 +21,36 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class PartenaireController extends AbstractController
 {
-    private $tokenStorage;
-    public function __construct(TokenStorageInterface $tokenStorage)
-    {
-       $this->tokenStorage = $tokenStorage;
-    }
+    
     /**
      * @Route("/newpartenaire", name="partenaire.new", methods={"Post"})
      */
     public function newPartenaire(Request $request,SerializerInterface $serializer, 
     EntityManagerInterface $em, UserPasswordEncoderInterface $userPasswordEncoder,
-    CompteGenerator $gener_compte  ) 
+    CompteGenerator $generCompte ) 
     {
-       // $userOnline = $this->tokenStorage->getToken()->getUser();.
-        // dd($userOnline); ok
         $jsonRecu = $request->getContent(); 
         //var_dump($jsonRecu);die();  OK
         $donneeRecu = json_decode($jsonRecu);
-        //var_dump($partenaire);die(); OK
-      
-        $partenaire = new Partenaire();
+        // dd($donneeRecu); 
+
         $user = new User();
+        $partenaire = new Partenaire();
         $compte = new Compte();
         $depot = new Depot();
 
         $ninea = $donneeRecu->ninea;
-        $soldedepot = $donneeRecu->soldeDepot;// dd($soldedepot);  ok
-        $numbCompte = $gener_compte->generateNumbCompte();// dd($numbCompte);  ok         
-        
-        //creation de  new partenaire
-        $partenaire->setNinea($ninea);
-        $partenaire->setRc($donneeRecu->rc);
-        $partenaire->setNumeroCompte($numbCompte);
-        // dd($partenaire); ok 
-        $em->persist($partenaire);
-        $em->flush();
+        $rc = $donneeRecu->rc ;
+        $soldeDepot = $donneeRecu->soldeInitial ;
 
-        //Recuperation de lid partenaire
-        $partenaireRepo = $this->getDoctrine()->getRepository(Partenaire::class);
-        $idPartenaire = $partenaireRepo->findOneBy(array("id" => $this->getLastId()));
-        // dd($idPartenaire);
-        //creationn de  new user
+                    //creation de  new partenaire
+        $partenaire->setNinea($ninea);
+        $partenaire->setRc($rc);
+        // dd($partenaire);  ok
+        $em->persist($partenaire);
+        // $em->flush();    ok
+
+                    //creation de  new user
         $roleRepo=$this->getDoctrine()->getRepository(Role::class);
         $role = $roleRepo->findOneBy(array("libelle"=>"ROLE_PARTENAIRE"));
         //var_dump($role);die(); role partenaire attribut
@@ -73,41 +62,38 @@ class PartenaireController extends AbstractController
         $user->setEmail($donneeRecu->email);
         $user->setUsername($donneeRecu->username);
         $user->setPassword($userPasswordEncoder->encodePassword($user, $donneeRecu->password));            
-        $user->setPartenaire($idPartenaire);
-        // dd($user);   
+        $user->setPartenaire($partenaire);
+        // dd($user);   ok
         $em->persist($user);
-        $em->flush();
+        // $em->flush();ok
 
-            // creation du compte partenaire
-
-        $compte->setCreatedAt(new \DateTime());
-        $compte->setNinea($ninea);
+        //     // creation du compte partenaire
+        $numbCompte = $generCompte->generateNumbCompte();
+        //dd($numbCompte);   
+        // $compte->setCreatedAt(new \DateTime());
+        $compte->setPartenaire($partenaire);
+        // $compte->setNinea($ninea);ok
         $compte->setNumeroCompte($numbCompte);
-        $compte->setSoldeInitial($soldedepot);
-        if(($compte->getSoldeInitial($soldedepot))< 500000){
+        if($soldeDepot < 500000){
             $data= [
                 "status" => 400,
                 "message" => " Le solde initial de depot doit etre supperieur a 500000"              
             ];
             return new JsonResponse($data, 400);
         }
-        $compte->setPartenaire($idPartenaire);
-        // dump($compte);die(); ok
+        $compte->setSoldeInitial($soldeDepot);
+
+        // dd($compte);
         $em->persist($compte);
-        $em->flush();
 
-        // creation du premier depot partenaire
-        $compteRepo = $this->getDoctrine()->getRepository(Compte::class);
-        $idCompte = $compteRepo->findOneBy(array("id" => $this->getLastIdCompte()));
-
-        $depot->setCompte($idCompte);
-        $depot->setCreatedAt(new \DateTime());
+                // creation du premier depot partenaire
+        $depot->setCompte($compte);
         $depot->setNumeroCompte($numbCompte);
-        $depot->setCompte($idCompte);
-        $depot->setSoldeDepot($soldedepot);
-            // dd($depot);ok 
+        $depot->setMontantDepot($soldeDepot);
+        $depot->setCreatedAt(new \DateTime());
+        // $depot->setCompte($idCompte);
+            // dd($depot);
         $em->persist($depot);
-        
         $em->flush();
 
             $data= [
@@ -124,7 +110,7 @@ class PartenaireController extends AbstractController
         // look for a single Product by name
         $res = $repository->findBy(array(), array('id' => 'DESC')) ;
         if($res == null){
-            return $res[0]=1;
+            return $res[0]=0;
         }else{
             return $res[0]->getId();
         }
@@ -137,7 +123,7 @@ class PartenaireController extends AbstractController
         // look for a single Product by name
         $res = $repository->findBy(array(), array('id' => 'DESC')) ;
         if($res == null){
-            return $res[0]=0;
+            return $res=0;
         }else{
             return $res[0]->getId();
         }
