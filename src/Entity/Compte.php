@@ -21,7 +21,7 @@ class Compte
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      */
     private $numeroCompte;
 
@@ -41,9 +41,38 @@ class Compte
      */
     private $depot;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="compteCree")
+     */
+    private $usercreateur;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Transaction", mappedBy="compteDeDepot")
+     */
+    private $transacDepot;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Transaction", mappedBy="compteDeRetrait")
+     */
+    private $transactRetrait;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Affectation", mappedBy="compte")
+     */
+    private $affectation;
+
+    // /**
+    //  * @ORM\OneToMany(targetEntity="App\Entity\Transaction", mappedBy="compteEnv")
+    //  */
+    // private $transacEnv;
+
     public function __construct()
     {
         $this->depot = new ArrayCollection();
+        $this->transacDepot = new ArrayCollection();
+        $this->transacEnv = new ArrayCollection();
+        $this->transactRetrait = new ArrayCollection();
+        $this->affectation = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -117,4 +146,111 @@ class Compte
 
         return $this;
     }
+
+    public function getUsercreateur(): ?User
+    {
+        return $this->usercreateur;
+    }
+
+    public function setUsercreateur(?User $usercreateur): self
+    {
+        $this->usercreateur = $usercreateur;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Transaction[]
+     */
+    public function getTransacDepot(): Collection
+    {
+        return $this->transacDepot;
+    }
+
+    public function addTransacDepot(Transaction $transacDepot): self
+    {
+        if (!$this->transacDepot->contains($transacDepot)) {
+            $this->transacDepot[] = $transacDepot;
+            $transacDepot->setCompteDeDepot($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTransacDepot(Transaction $transacDepot): self
+    {
+        if ($this->transacDepot->contains($transacDepot)) {
+            $this->transacDepot->removeElement($transacDepot);
+            // set the owning side to null (unless already changed)
+            if ($transacDepot->getCompteDeDepot() === $this) {
+                $transacDepot->setCompteDeDepot(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Transaction[]
+     */
+    public function getTransactRetrait(): Collection
+    {
+        return $this->transactRetrait;
+    }
+
+    public function addTransactRetrait(Transaction $transactRetrait): self
+    {
+        if (!$this->transactRetrait->contains($transactRetrait)) {
+            $this->transactRetrait[] = $transactRetrait;
+            $transactRetrait->setCompteDeRetrait($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTransactRetrait(Transaction $transactRetrait): self
+    {
+        if ($this->transactRetrait->contains($transactRetrait)) {
+            $this->transactRetrait->removeElement($transactRetrait);
+            // set the owning side to null (unless already changed)
+            if ($transactRetrait->getCompteDeRetrait() === $this) {
+                $transactRetrait->setCompteDeRetrait(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Affectation[]
+     */
+    public function getAffectation(): Collection
+    {
+        return $this->affectation;
+    }
+
+    public function addAffectation(Affectation $affectation): self
+    {
+        if (!$this->affectation->contains($affectation)) {
+            $this->affectation[] = $affectation;
+            $affectation->setCompte($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAffectation(Affectation $affectation): self
+    {
+        if ($this->affectation->contains($affectation)) {
+            $this->affectation->removeElement($affectation);
+            // set the owning side to null (unless already changed)
+            if ($affectation->getCompte() === $this) {
+                $affectation->setCompte(null);
+            }
+        }
+
+        return $this;
+    }
+
+    
 }

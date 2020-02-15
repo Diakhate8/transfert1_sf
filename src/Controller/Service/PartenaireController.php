@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Service;
 
 use App\Entity\Role;
 use App\Entity\User;
@@ -12,23 +12,26 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+
 /**
  * @Route("/api")
  */
 class PartenaireController extends AbstractController
 {
-    
+
     /**
      * @Route("/newpartenaire", name="partenaire.new", methods={"Post"})
      */
-    public function newPartenaire(Request $request,SerializerInterface $serializer, 
+    public function newPartenaire(Request $request, 
     EntityManagerInterface $em, UserPasswordEncoderInterface $userPasswordEncoder,
     CompteGenerator $generCompte ) 
-    {
+    { 
+        $userOnline = $this->getUser();
+        // dd($userOnline);
+
         $jsonRecu = $request->getContent(); 
         //var_dump($jsonRecu);die();  OK
         $donneeRecu = json_decode($jsonRecu);
@@ -71,9 +74,7 @@ class PartenaireController extends AbstractController
         $numbCompte = $generCompte->generateNumbCompte();
         //dd($numbCompte);   
         // $compte->setCreatedAt(new \DateTime());
-        $compte->setPartenaire($partenaire);
-        // $compte->setNinea($ninea);ok
-        $compte->setNumeroCompte($numbCompte);
+
         if($soldeDepot < 500000){
             $data= [
                 "status" => 400,
@@ -82,8 +83,12 @@ class PartenaireController extends AbstractController
             return new JsonResponse($data, 400);
         }
         $compte->setSoldeInitial($soldeDepot);
-
+        $compte->setPartenaire($partenaire);
+        $compte->setNumeroCompte($numbCompte);
+        $compte->setUserCreateur($userOnline);
         // dd($compte);
+
+        
         $em->persist($compte);
 
                 // creation du premier depot partenaire
@@ -91,9 +96,12 @@ class PartenaireController extends AbstractController
         $depot->setNumeroCompte($numbCompte);
         $depot->setMontantDepot($soldeDepot);
         $depot->setCreatedAt(new \DateTime());
+        $depot->setUserCreateur($userOnline);
+
         // $depot->setCompte($idCompte);
-            // dd($depot);
+            //  dd($depot);
         $em->persist($depot);
+        
         $em->flush();
 
             $data= [
@@ -104,31 +112,31 @@ class PartenaireController extends AbstractController
 
     }
 
-    public function getLastId() 
-    {
-        $repository = $this->getDoctrine()->getRepository(Partenaire::class);
-        // look for a single Product by name
-        $res = $repository->findBy(array(), array('id' => 'DESC')) ;
-        if($res == null){
-            return $res[0]=0;
-        }else{
-            return $res[0]->getId();
-        }
+    // public function getLastId() 
+    // {
+    //     $repository = $this->getDoctrine()->getRepository(Partenaire::class);
+    //     // look for a single Product by name
+    //     $res = $repository->findBy(array(), array('id' => 'DESC')) ;
+    //     if($res == null){
+    //         return $res[0]=0;
+    //     }else{
+    //         return $res[0]->getId();
+    //     }
         
-    }
+    // }
 
-    public function getLastIdCompte() 
-    {
-        $repository = $this->getDoctrine()->getRepository(Compte::class);
-        // look for a single Product by name
-        $res = $repository->findBy(array(), array('id' => 'DESC')) ;
-        if($res == null){
-            return $res=0;
-        }else{
-            return $res[0]->getId();
-        }
+    // public function getLastIdCompte() 
+    // {
+    //     $repository = $this->getDoctrine()->getRepository(Compte::class);
+    //     // look for a single Product by name
+    //     $res = $repository->findBy(array(), array('id' => 'DESC')) ;
+    //     if($res == null){
+    //         return $res=0;
+    //     }else{
+    //         return $res[0]->getId();
+    //     }
         
-    }
+    // }
 
 
 }

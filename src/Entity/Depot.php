@@ -39,6 +39,11 @@ class Depot
      */
     private $compte;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="depotCree")
+     */
+    private $userCreateur;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -88,6 +93,18 @@ class Depot
     public function setCompte(?Compte $compte): self
     {
         $this->compte = $compte;
+
+        return $this;
+    }
+
+    public function getUserCreateur(): ?User
+    {
+        return $this->userCreateur;
+    }
+
+    public function setUserCreateur(?User $userCreateur): self
+    {
+        $this->userCreateur = $userCreateur;
 
         return $this;
     }

@@ -34,6 +34,14 @@ class AppFixtures extends Fixture
         $role_partenaire->setLibelle("ROLE_PARTENAIRE");
         $manager->persist($role_partenaire);
 
+        $role_admin_partenaire = new Role();
+        $role_admin_partenaire->setLibelle("ROLE_ADMIN_PARTENAIRE");
+        $manager->persist($role_admin_partenaire);
+
+        $role_caissier_partenaire = new Role();
+        $role_caissier_partenaire->setLibelle("ROLE_CAISSIER_PARTENAIRE");
+        $manager->persist($role_caissier_partenaire);
+
         $this->addReference('role_admin_system',$role_admin_system);        
         $roleAdmdinSystem = $this->getReference('role_admin_system');
 
@@ -41,7 +49,6 @@ class AppFixtures extends Fixture
         $user1->setUsername("AdminSys");
         $user1->setRole($roleAdmdinSystem);
         $user1->setPassword($this->encoder->encodePassword($user1, "adminsys"));
-       // $user1->setRoles(json_encode(array("ROLE_ADMIN_SYSTEM")));
         $user1->setPrenom("Ibou");
         $user1->setNom("Diakhate");
         $user1->setAdresse("Dakar");

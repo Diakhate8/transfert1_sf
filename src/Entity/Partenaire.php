@@ -2,10 +2,12 @@
 
 namespace App\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * @ApiResource()
@@ -21,22 +23,26 @@ class Partenaire
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
+     * @Assert\NotBlank
      */
     private $ninea;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
+     * @Assert\NotBlank
      */
     private $rc;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\User", mappedBy="partenaire")
+     * @Assert\NotBlank
      */
     private $user;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Compte", mappedBy="partenaire")
+     * @Assert\NotBlank
      */
     private $compte;
 

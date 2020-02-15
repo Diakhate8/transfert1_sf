@@ -4,8 +4,8 @@ security:
             algorithm: bcrypt
 
     role_hierarchy:   
-        ROLE_CAISSIER: ROLE_USER
-        ROLE_ADMIN:   [ROLE_CAISSIER, ROLE_USER ]
+        ROLE_CAISSIER:      ROLE_USER
+        ROLE_ADMIN:        [ROLE_CAISSIER, ROLE_USER ]
         ROLE_ADMIN_SYSTEM: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
                 
     providers:

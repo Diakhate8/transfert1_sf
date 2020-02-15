@@ -3,13 +3,16 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
-use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Symfony\Component\HttpFoundation\File\File;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @ApiResource(
@@ -43,29 +46,37 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"post:read", "post:write"})
+     * @Assert\NotBlank
      */
     private $prenom;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank
      */
     private $nom;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"post:read", "post:write"})
+     * @Assert\NotBlank
      */
     private $adresse;
 
     /**
      * @ORM\Column(type="integer")
      * @Groups({"post:read", "post:write"})
+     * @Assert\NotBlank
+     * 
      */
     private $telephone;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255, unique=true)
      * @Groups({"post:read", "post:write"})
+     * @Assert\Email(
+     *     message = "The email is not a valid email."
+     * )
      */
     private $email;
 
@@ -78,6 +89,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255 )
      * @Groups({"post:read", "post:write"})
+     * @Assert\NotBlank
      */
     private $password;
 
@@ -85,6 +97,7 @@ class User implements UserInterface
      * @ORM\ManyToOne(targetEntity="App\Entity\Role", inversedBy="users")
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"post:read", "post:write"})
+     * @Assert\NotBlank
      */
     private $role;
 
@@ -109,10 +122,34 @@ class User implements UserInterface
      * @ORM\ManyToOne(targetEntity="App\Entity\Partenaire", inversedBy="user")
      */
     private $partenaire;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Compte", mappedBy="usercreateur")
+     */
+    private $compteCree;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Depot", mappedBy="userCreateur")
+     */
+    private $depotCree;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Transaction", mappedBy="userCreateur")
+     */
+    private $transactions;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Affectation", mappedBy="user")
+     */
+    private $affectation;
    
     public function __construct()
     {
         $this->isActive = true;
+        $this->compteCree = new ArrayCollection();
+        $this->depotCree = new ArrayCollection();
+        $this->transactions = new ArrayCollection();
+        $this->affectation = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -237,6 +274,142 @@ class User implements UserInterface
         return $this;
     }
 
+    public function getPartenaire(): ?Partenaire
+    {
+        return $this->partenaire;
+    }
+
+    public function setPartenaire(?Partenaire $partenaire): self
+    {
+        $this->partenaire = $partenaire;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Compte[]
+     */
+    public function getCompteCree(): Collection
+    {
+        return $this->compteCree;
+    }
+
+    public function addCompteCree(Compte $compteCree): self
+    {
+        if (!$this->compteCree->contains($compteCree)) {
+            $this->compteCree[] = $compteCree;
+            $compteCree->setUsercreateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCompteCree(Compte $compteCree): self
+    {
+        if ($this->compteCree->contains($compteCree)) {
+            $this->compteCree->removeElement($compteCree);
+            // set the owning side to null (unless already changed)
+            if ($compteCree->getUsercreateur() === $this) {
+                $compteCree->setUsercreateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Depot[]
+     */
+    public function getDepotCree(): Collection
+    {
+        return $this->depotCree;
+    }
+
+    public function addDepotCree(Depot $depotCree): self
+    {
+        if (!$this->depotCree->contains($depotCree)) {
+            $this->depotCree[] = $depotCree;
+            $depotCree->setUserCreateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDepotCree(Depot $depotCree): self
+    {
+        if ($this->depotCree->contains($depotCree)) {
+            $this->depotCree->removeElement($depotCree);
+            // set the owning side to null (unless already changed)
+            if ($depotCree->getUserCreateur() === $this) {
+                $depotCree->setUserCreateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Transaction[]
+     */
+    public function getTransactions(): Collection
+    {
+        return $this->transactions;
+    }
+
+    public function addTransaction(Transaction $transaction): self
+    {
+        if (!$this->transactions->contains($transaction)) {
+            $this->transactions[] = $transaction;
+            $transaction->setUserCreateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTransaction(Transaction $transaction): self
+    {
+        if ($this->transactions->contains($transaction)) {
+            $this->transactions->removeElement($transaction);
+            // set the owning side to null (unless already changed)
+            if ($transaction->getUserCreateur() === $this) {
+                $transaction->setUserCreateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Affectation[]
+     */
+    public function getAffectation(): Collection
+    {
+        return $this->affectation;
+    }
+
+    public function addAffectation(Affectation $affectation): self
+    {
+        if (!$this->affectation->contains($affectation)) {
+            $this->affectation[] = $affectation;
+            $affectation->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAffectation(Affectation $affectation): self
+    {
+        if ($this->affectation->contains($affectation)) {
+            $this->affectation->removeElement($affectation);
+            // set the owning side to null (unless already changed)
+            if ($affectation->getUser() === $this) {
+                $affectation->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
     /**
      * @see UserInterface
      */
@@ -264,18 +437,5 @@ class User implements UserInterface
     public function isEnabled(){
         return $this->isActive;
     }
-
-    public function getPartenaire(): ?Partenaire
-    {
-        return $this->partenaire;
-    }
-
-    public function setPartenaire(?Partenaire $partenaire): self
-    {
-        $this->partenaire = $partenaire;
-
-        return $this;
-    }
-
 
 }
