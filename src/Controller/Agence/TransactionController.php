@@ -8,14 +8,18 @@ use App\Entity\Transaction;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\TransactionRepository;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 
 /**
+ *  @IsGranted({"ROLE_PARTENAIRE", ROLE_ADMIN_PARTENAIRE}, statusCode=404, 
+ * message=" Access refuser vous n'etes pas un administrateur")
  * @Route("/api")
  */
 class TransactionController extends AbstractController
@@ -60,16 +64,8 @@ class TransactionController extends AbstractController
             $solde = $donneeRecu->solde ;
             $jour = new \DateTime('now');
 
-        //alcule Cdes frais
-            // $frais = $calculFrais->genereFrais($solde);           
-            // dd($frais);  ok
-            //CALCULE DES DIFFERENTS PARTS
-                // $partEtat = $frais*(30/100); dd($partEtat);
-                // $partService = $frais*(40/100)
-                // $partAgence = $frais*(30/100)
-                // $partAEnv = $frais*(10/100)
-                // $partARetrait = $frais*(20/100)
-
+        // Calcule Cdes frais
+            $frais = $calculFrais->genereFrais($solde);           
         //Ajout d'une transaction
         try{
             $transaction = new Transaction();
@@ -85,7 +81,11 @@ class TransactionController extends AbstractController
                         ->setNomCorrespondant($nomB)
                         ->setTelephoneCorrespondant($telephoneB)
                         ->setCreatedAt($jour)
-                        ->setUserCreateur($userOnline);
+                        ->setUserCreateur($userOnline)
+                        ->setPartAgenceE($frais*(10/100))
+                        ->setPartAgenceR($frais*(20/100))
+                        ->setPartEtat($frais*(30/100))
+                        ->setPartService($frais*(40/100));
                 //  dd($transaction);   ok
             $em->persist($transaction);
 
@@ -102,7 +102,7 @@ class TransactionController extends AbstractController
                 $Entitycompte->setNumeroCompte($compteEnv);
             // dd($Entitycompte);  ok
 
-            // $em->flush();
+            $em->flush();
 
             // if(!$Entitycompte){a
 
@@ -127,8 +127,10 @@ class TransactionController extends AbstractController
      * @Route("/newtransactionR", name="transaction.sub", methods={"Post"})    
      */
     public function retrait(Request $request, EntityManagerInterface $em, TransactionRepository $transactRipo, 
-    ValidatorInterface $validator){
-        $userOnline = $this->tokenStorage->getToken()->getUser();
+    ValidatorInterface $validator, Security $security){
+        // $userOnline = $this->$security->getToken()->getUser();
+        $userOnline = $this->getUser();
+        // $this->denyAccessUnlessGranted("ROLE_ADMIN_SYSTEME")  ;      
         $userPartenaire= $userOnline->getPartenaire();
 
         //TRANSACTION RETRAIT FAIT PAR LE PARTENAIRE OU ADMIN_PARTENAIRE
@@ -180,6 +182,7 @@ class TransactionController extends AbstractController
                 $Entitycompte->setNumeroCompte($numbcompte);
             //  dd($Entitycompte); 
                 $em->persist($Entitycompte);
+                
                 $em->flush();
                 $data= [
                     "status" => 201,

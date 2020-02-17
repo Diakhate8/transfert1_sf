@@ -97,6 +97,26 @@ class Transaction
      */
     private $ninClient;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $partEtat;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $partService;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $partAgenceE;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $partAgenceR;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -281,4 +301,54 @@ class Transaction
 
         return $this;
     }
+
+    public function getPartEtat(): ?int
+    {
+        return $this->partEtat;
+    }
+
+    public function setPartEtat(int $partEtat): self
+    {
+        $this->partEtat = $partEtat;
+
+        return $this;
+    }
+
+    public function getPartService(): ?int
+    {
+        return $this->partService;
+    }
+
+    public function setPartService(int $partService): self
+    {
+        $this->partService = $partService;
+
+        return $this;
+    }
+
+    public function getPartAgenceE(): ?int
+    {
+        return $this->partAgenceE;
+    }
+
+    public function setPartAgenceE(int $partAgenceE): self
+    {
+        $this->partAgenceE = $partAgenceE;
+
+        return $this;
+    }
+
+    public function getPartAgenceR(): ?int
+    {
+        return $this->partAgenceR;
+    }
+
+    public function setPartAgenceR(int $partAgenceR): self
+    {
+        $this->partAgenceR = $partAgenceR;
+
+        return $this;
+    }
+
+   
 }

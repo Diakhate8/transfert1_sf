@@ -2,6 +2,7 @@
 
 namespace App\Controller\Agence;
 
+use App\Utule\CalculFrais;
 use App\Entity\Transaction;
 use App\Repository\CompteRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -11,33 +12,29 @@ use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @Route("/api")
  */
 class EnvoieCrontrollerController extends AbstractController
 { 
-    private $tokenStorage;
-
-    public function __construct(TokenStorageInterface $tokenStorage)
-    {
-        $this->tokenStorage = $tokenStorage;
-    }
     /**
-     * @Route("/newenvoie", name="newenvoie", methods={"Post"})
+     * @IsGranted("ROLE_CAISSIER_PARTENAIRE", statusCode=404, 
+     * message=" Access refuser vous n'etes pas caissier")
+     * @Route("/Envoie", name="Envoie.add", methods={"Post"})
      */
     public function newEnvoie(Request $request, EntityManagerInterface $em,
     ValidatorInterface $validator,Security $security, AffectationRepository $affectRipo,
-     CompteRepository $compteRipo)
+    CalculFrais $calculFrais,  CompteRepository $compteRipo)
     {
-        $userOnline = $this->tokenStorage->getToken()->getUser();
+        $userOnline = $this->$security->getUser();
         $donneeRecu = json_decode($request->getContent());
             $entityAffectation = $affectRipo->findOneBy(array("user"=>$userOnline));
             $EntityCompte = $entityAffectation->getCompte();
             $infosCompte = $compteRipo->findOneBy(array("id"=>$EntityCompte));
-        //  dd($infosCompte);
+         dd($infosCompte);
 
     //Transaction pour un User Partenaitre   
         try{
@@ -45,14 +42,14 @@ class EnvoieCrontrollerController extends AbstractController
             $prenomEnv = $donneeRecu->prenomEnv;
             $nomEnv = $donneeRecu->nomEnv ;
             $telephoneEnv = $donneeRecu->telephoneEnv ;
-            // $identite= $donneeRecu->ninCorrespondant ;
+            $identiteEnv = $donneeRecu->ninClient ;
 
             $prenomB= $donneeRecu->prenomCorrespondant;
             $nomB = $donneeRecu->nomCorrespondant ;
             $telephoneB = $donneeRecu->telephoneCorrespondant ;
-            $identiteB = $donneeRecu->ninCorrespondant ;
             $mode = $donneeRecu->mode ;
             $solde = $donneeRecu->solde ;
+            $jour = new \DateTime('now');
 
         //MODE ENVOIE       
             if($mode=="envoie"){
@@ -60,23 +57,27 @@ class EnvoieCrontrollerController extends AbstractController
             }else{
                 throw new Exception('Voulez vous faire un envoie ou retrait');
             }
-            $jour = new \DateTime('now');
-                    //controlle des frais
+            // Calcule Cdes frais
+            $frais = $calculFrais->genereFrais($solde); 
         //Ajout d'une transaction
             $transaction = new Transaction();
             $transaction->setCompteDeDepot($infosCompte)
                         ->setPrenomEnv($prenomEnv)
                         ->setNomEnv($nomEnv)
+                        ->setNinClient($identiteEnv)
                         ->setTelephoneEnv($telephoneEnv)
                         ->setMode($mode)
                         ->setSolde($solde)
                         ->setCode($code)
                         ->setPrenomCorrespondant($prenomB)
                         ->setNomCorrespondant($nomB)
-                        ->setNinCorrespondant($identiteB)
                         ->setTelephoneCorrespondant($telephoneB)
                         ->setCreatedAt($jour)
-                        ->setUserCreateur($userOnline);
+                        ->setUserCreateur($userOnline)
+                        ->setPartAgenceE($frais*(10/100))
+                        ->setPartAgenceR($frais*(20/100))
+                        ->setPartEtat($frais*(30/100))
+                        ->setPartService($frais*(40/100));
                 // dd($transaction);
             $em->persist($transaction);
 

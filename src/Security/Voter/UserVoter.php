@@ -69,9 +69,9 @@ class UserVoter extends Voter implements VoterInterface
                 // return true or false
                 break;
             case 'CAN_VIEW':
-   
+
                 break;   
-            default:
+            default :
                 break;
         }
 

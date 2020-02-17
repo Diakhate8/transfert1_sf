@@ -17,7 +17,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @ApiResource(
  *     itemOperations={
- *          "get"={
+ *          "get"={ "access_control"="is_granted('CAN_POST', object)",
+
  *              "normalization_context"={"groups"={"user:read", "user:item:get"}},
  *          },
  *          "put"={

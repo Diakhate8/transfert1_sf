@@ -11,8 +11,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-// use Symfony\Component\HttpFoundation\Response
 
 /**
  * @Route("/api")
@@ -20,44 +20,46 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class AffectationController extends AbstractController
 {
     /**
+     * @IsGranted({"ROLE_PARTENAIRE", ROLE_ADMIN_PARTENAIRE}, statusCode=404, 
+     * message=" Access refuser vous n'etes pas un administrateur")
      * @Route("/affectation", name="affectation")
      */
     public function affectation(Request $request, ValidatorInterface $validator,
-    EntityManagerInterface $em, PartenaireRepository $partenaireRipo,UserRepository $userRipo,
-    CompteRepository $compteRipo)
+    EntityManagerInterface $em, UserRepository $userRipo, CompteRepository $compteRipo)
     {
             $userOnline = $this->getUser();
         //Recuperation du partenaire (id) en ligne  dans lentite user 
             $idPartenaire = $userRipo->findOneBy(array('id' => $userOnline ))->getPartenaire() ;
-        try{ // dd($idPartenaire);   ok
+        // dd($idPartenaire);   ok
+            
             //Recuperation des Users du Partenaire 
-                $recupUsersP = $userRipo->findBy(array('partenaire' => $idPartenaire )) ;
-                // dd($recupUsersP);    ok
+                // $recupUsersP = $userRipo->findBy(array('userCreateur' => $idPartenaire )) ;
+                // dd($recupUsersP);  
             //Recuperation desComptes du Partenaire 
                 $comptes = $compteRipo->findBy(array('partenaire' => $idPartenaire )) ;
-                // dd($comptes); ok
-            //Affection
-            $donneeRecu = json_decode($request->getContent());
-            if(!$donneeRecu->dateDebut || !$donneeRecu->dateFin || !$donneeRecu->compte){
-                // throw new Exceptionr
-                return ("Veuillez Remplir toutes les champs");
-            }
-                $dateD = $donneeRecu->dateDebut;
-                $dateF = $donneeRecu->dateFin;
-                $numbCompte = $donneeRecu->compte;
-                $user = $donneeRecu->user;
+                
+                //  dd($comptes); ok
+            try{    
+                //Affection
+                $donneeRecu = json_decode($request->getContent());
+                if(!$donneeRecu->dateDebut || !$donneeRecu->dateFin || !$donneeRecu->compte){
+                    // throw new Exceptionr
+                    return ("Veuillez Remplir toutes les champs");
+                }
+                
             //Modification de la table daffectation
                 $affectation = new Affectation();
-                $affectation->setDateDebut = $dateD ;
-                $affectation->setDateFin = $dateF ;
-                $affectation->setUser = $user ;
-                $affectation->setCompte = $numbCompte ;
+                $affectation->setDateDebut = $donneeRecu->dateDebut ;
+                $affectation->setDateFin = $donneeRecu->dateFin;
+                $affectation->setUser = $donneeRecu->user;
+                $affectation->setCompte = $donneeRecu->compte;
 
             $errors= $validator->validate($affectation);
             if(count($errors) >0){
                 return $this->json($errors, 400);
             }
-                // $em->flush();
+            $em->persist($affectation);
+            $em->flush();
                 
                 $data= [
                     "status" => 201,
