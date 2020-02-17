@@ -2,8 +2,9 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiResource;
 
 /**
  * @ApiResource()
@@ -76,11 +77,13 @@ class Transaction
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\Regex("/^(78||77||76||70)[0-9]{7}$/")
      */
     private $telephoneEnv;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\Regex("/^(78||77||76||70)[0-9]{7}$/")
      */
     private $telephoneCorrespondant;
 
@@ -88,6 +91,11 @@ class Transaction
      * @ORM\Column(type="string", length=255)
      */
     private $mode;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $ninClient;
 
     public function getId(): ?int
     {
@@ -258,6 +266,18 @@ class Transaction
     public function setMode(string $mode): self
     {
         $this->mode = $mode;
+
+        return $this;
+    }
+
+    public function getNinClient(): ?int
+    {
+        return $this->ninClient;
+    }
+
+    public function setNinClient(int $ninClient): self
+    {
+        $this->ninClient = $ninClient;
 
         return $this;
     }

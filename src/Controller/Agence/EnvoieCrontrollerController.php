@@ -29,7 +29,8 @@ class EnvoieCrontrollerController extends AbstractController
      * @Route("/newenvoie", name="newenvoie", methods={"Post"})
      */
     public function newEnvoie(Request $request, EntityManagerInterface $em,
-    ValidatorInterface $validator,Security $security, AffectationRepository $affectRipo, CompteRepository $compteRipo)
+    ValidatorInterface $validator,Security $security, AffectationRepository $affectRipo,
+     CompteRepository $compteRipo)
     {
         $userOnline = $this->tokenStorage->getToken()->getUser();
         $donneeRecu = json_decode($request->getContent());
@@ -37,8 +38,6 @@ class EnvoieCrontrollerController extends AbstractController
             $EntityCompte = $entityAffectation->getCompte();
             $infosCompte = $compteRipo->findOneBy(array("id"=>$EntityCompte));
         //  dd($infosCompte);
-         $compteEnv = $infosCompte ;
-        // dd($infosCompte);
 
     //Transaction pour un User Partenaitre   
         try{

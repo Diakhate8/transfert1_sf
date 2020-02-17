@@ -12,7 +12,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Security\Core\User\AdvancedUserInterface;
+
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @ApiResource(
@@ -66,6 +66,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="integer")
      * @Groups({"post:read", "post:write"})
+     * @Assert\Regex("/^(78||77||76||70)[0-9]{7}$/")
      * @Assert\NotBlank
      * 
      */
@@ -425,17 +426,6 @@ class User implements UserInterface
     {
         return true;
     }
-    public function isAccountNonExpired(){
-        return true;
-    }
-    public function isAccountNonLocked(){
-        return true;
-    }
-    public function isCredentialsNonExpired(){
-        return true;
-    }
-    public function isEnabled(){
-        return $this->isActive;
-    }
+
 
 }
