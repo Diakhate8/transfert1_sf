@@ -5,6 +5,7 @@ namespace App\Entity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ApiResource()
@@ -16,36 +17,44 @@ class Transaction
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"post:read", "post:write"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"post:read", "post:write"})
      */
     private $prenomEnv;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"post:read", "post:write"})
      */
     private $nomEnv;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"post:read", "post:write"})
      */
     private $ninCorrespondant;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"post:read", "post:write"})
+     * 
      */
     private $solde;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"post:read", "post:write"})
      */
     private $prenomCorrespondant;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"post:read", "post:write"})
      */
     private $nomCorrespondant;
 
@@ -56,69 +65,82 @@ class Transaction
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"post:read", "post:write"})
      */
     private $code;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"post:read", "post:write"})
      */
     private $createdAt;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="transactions")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups("post:read")
      */
     private $userCreateur;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Compte", inversedBy="transactRetrait")
+     * @Groups("post:read")
      */
     private $compteDeRetrait;
 
     /**
      * @ORM\Column(type="integer")
      * @Assert\Regex("/^(78||77||76||70)[0-9]{7}$/")
+     * @Groups({"post:read", "post:write"})
      */
     private $telephoneEnv;
 
     /**
      * @ORM\Column(type="integer")
      * @Assert\Regex("/^(78||77||76||70)[0-9]{7}$/")
+     * @Groups({"post:read", "post:write"})
      */
     private $telephoneCorrespondant;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"post:read", "post:write"})
      */
     private $mode;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"post:read", "post:write"})
      */
     private $ninClient;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups("post:read")
      */
     private $partEtat;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"post:read", "post:write"})
      */
     private $partService;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"post:read", "post:write"})
      */
     private $partAgenceE;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"post:read", "post:write"})
      */
     private $partAgenceR;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"post:read", "post:write"})
      */
     private $frais;
 

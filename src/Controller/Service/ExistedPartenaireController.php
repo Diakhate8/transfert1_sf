@@ -20,7 +20,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class ExistedPartenaireController extends AbstractController
 {
     /**
-     * @Route("nouveaucompte", name="nouveaucompte.add")
+     * @Route("nouveaucompte", name="nouveaucompte.add", methods={"Post"})
      */
     public function newPartenaire(Request $request, ValidatorInterface $validator,
     EntityManagerInterface $em,  CompteGenerator $generCompte ){ 

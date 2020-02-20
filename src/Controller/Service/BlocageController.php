@@ -6,7 +6,7 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 
@@ -16,6 +16,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class BlocageController extends AbstractController
 {
     /**
+     * @IsGranted({"ROLE_ADMIN_SYSTEME","ROLE_ADMIN"}, statusCode=404, 
+     * message=" Access refuser ")
      * @Route("/partenairebloc/{id}", name="partenaire.bloc")
      */
     public function blocPartenaire($id , UserRepository $userRepos, Request $request,

@@ -13,6 +13,8 @@ return [
     'depot.add' => [[], ['_controller' => 'App\\Controller\\Service\\DepotController::newDepot'], [], [['text', '/api/newdepot']], [], []],
     'nouveaucompte.add' => [[], ['_controller' => 'App\\Controller\\Service\\ExistedPartenaireController::newPartenaire'], [], [['text', '/apinouveaucompte']], [], []],
     'partenaire.new' => [[], ['_controller' => 'App\\Controller\\Service\\PartenaireController::newPartenaire'], [], [['text', '/api/newpartenaire']], [], []],
+    'rapport' => [[], ['_controller' => 'App\\Controller\\Service\\RapportController::showTransaction'], [], [['text', '/api/rapport']], [], []],
+    'rapportpartenaire' => [[], ['_controller' => 'App\\Controller\\Service\\RapportController::showTransactionP'], [], [['text', '/api/rapportpartenaire']], [], []],
     'user.show' => [[], ['_controller' => 'App\\Controller\\UserController::showUser'], [], [['text', '/api/user']], [], []],
     'api_entrypoint' => [['index', '_format'], ['_controller' => 'api_platform.action.entrypoint', '_format' => '', '_api_respond' => 'true', 'index' => 'index'], ['index' => 'index'], [['variable', '.', '[^/]++', '_format'], ['variable', '/', 'index', 'index'], ['text', '/api']], [], []],
     'api_doc' => [['_format'], ['_controller' => 'api_platform.action.documentation', '_format' => '', '_api_respond' => 'true'], [], [['variable', '.', '[^/]++', '_format'], ['text', '/api/docs']], [], []],
