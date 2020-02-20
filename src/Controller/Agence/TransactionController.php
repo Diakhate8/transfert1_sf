@@ -18,7 +18,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 
 /**
- *  @IsGranted({"ROLE_PARTENAIRE", ROLE_ADMIN_PARTENAIRE}, statusCode=404, 
+ *  @IsGranted({"ROLE_PARTENAIRE", "ROLE_ADMIN_PARTENAIRE"}, statusCode=404, 
  * message=" Access refuser vous n'etes pas un administrateur")
  * @Route("/api")
  */
@@ -82,6 +82,7 @@ class TransactionController extends AbstractController
                         ->setTelephoneCorrespondant($telephoneB)
                         ->setCreatedAt($jour)
                         ->setUserCreateur($userOnline)
+                        ->setFrais($frais)
                         ->setPartAgenceE($frais*(10/100))
                         ->setPartAgenceR($frais*(20/100))
                         ->setPartEtat($frais*(30/100))

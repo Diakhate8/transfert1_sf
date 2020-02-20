@@ -74,6 +74,7 @@ class EnvoieCrontrollerController extends AbstractController
                         ->setTelephoneCorrespondant($telephoneB)
                         ->setCreatedAt($jour)
                         ->setUserCreateur($userOnline)
+                        ->setFrais($frais)
                         ->setPartAgenceE($frais*(10/100))
                         ->setPartAgenceR($frais*(20/100))
                         ->setPartEtat($frais*(30/100))
@@ -89,7 +90,7 @@ class EnvoieCrontrollerController extends AbstractController
             $soldeCompte = $infosCompte->getSoldeInitial();
             $infosCompte->setSoldeInitial($soldeCompte-$solde);
             //  dd($infosCompte); 
-            
+            $em->flush();
         $data= [
             "status" => 201,
             "message" => " Depot effectue avec succes" ];

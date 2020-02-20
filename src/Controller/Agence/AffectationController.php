@@ -20,7 +20,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class AffectationController extends AbstractController
 {
     /**
-     * @IsGranted({"ROLE_PARTENAIRE", ROLE_ADMIN_PARTENAIRE}, statusCode=404, 
+     * @IsGranted({"ROLE_PARTENAIRE", "ROLE_ADMIN_PARTENAIRE"}, statusCode=404, 
      * message=" Access refuser vous n'etes pas un administrateur")
      * @Route("/affectation", name="affectation")
      */
@@ -49,10 +49,10 @@ class AffectationController extends AbstractController
                 
             //Modification de la table daffectation
                 $affectation = new Affectation();
-                $affectation->setDateDebut = $donneeRecu->dateDebut ;
-                $affectation->setDateFin = $donneeRecu->dateFin;
-                $affectation->setUser = $donneeRecu->user;
-                $affectation->setCompte = $donneeRecu->compte;
+                $affectation->setDateDebut($donneeRecu->dateDebut) 
+                            ->setDateFin($donneeRecu->dateFin)
+                            ->setUser($donneeRecu->user)
+                            ->setCompte($donneeRecu->compte);
 
             $errors= $validator->validate($affectation);
             if(count($errors) >0){

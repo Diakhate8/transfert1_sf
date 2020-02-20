@@ -117,6 +117,11 @@ class Transaction
      */
     private $partAgenceR;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $frais;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -346,6 +351,18 @@ class Transaction
     public function setPartAgenceR(int $partAgenceR): self
     {
         $this->partAgenceR = $partAgenceR;
+
+        return $this;
+    }
+
+    public function getFrais(): ?int
+    {
+        return $this->frais;
+    }
+
+    public function setFrais(int $frais): self
+    {
+        $this->frais = $frais;
 
         return $this;
     }

@@ -12,7 +12,7 @@ return [PHP_INT_MAX, static function () { return \Symfony\Component\VarExporter\
                 'ROLE_CAISSIER_PARTENAIRE',
             ],
             'message' => [
-                ' this access refuser vous netes pas caissier',
+                ' Access refuser vous n\'etes pas caissier',
             ],
             'statusCode' => [
                 404,

@@ -9,6 +9,7 @@ return [
     'retrait.add' => [[], ['_controller' => 'App\\Controller\\Agence\\RetraitController::retrait'], [], [['text', '/api/newretrait']], [], []],
     'transaction.add' => [[], ['_controller' => 'App\\Controller\\Agence\\TransactionController::envoie'], [], [['text', '/api/newtransactionE']], [], []],
     'transaction.sub' => [[], ['_controller' => 'App\\Controller\\Agence\\TransactionController::retrait'], [], [['text', '/api/newtransactionR']], [], []],
+    'partenaire.bloc' => [['id'], ['_controller' => 'App\\Controller\\Service\\BlocageController::blocPartenaire'], [], [['variable', '/', '[^/]++', 'id'], ['text', '/api/partenairebloc']], [], []],
     'depot.add' => [[], ['_controller' => 'App\\Controller\\Service\\DepotController::newDepot'], [], [['text', '/api/newdepot']], [], []],
     'nouveaucompte.add' => [[], ['_controller' => 'App\\Controller\\Service\\ExistedPartenaireController::newPartenaire'], [], [['text', '/apinouveaucompte']], [], []],
     'partenaire.new' => [[], ['_controller' => 'App\\Controller\\Service\\PartenaireController::newPartenaire'], [], [['text', '/api/newpartenaire']], [], []],

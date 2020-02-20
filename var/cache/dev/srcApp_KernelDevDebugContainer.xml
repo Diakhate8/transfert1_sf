@@ -501,6 +501,13 @@
     <service id="App\Controller\CreateMediaObjectAction" class="App\Controller\CreateMediaObjectAction" public="true" autowire="true" autoconfigure="true">
       <tag name="controller.service_arguments"/>
     </service>
+    <service id="App\Controller\Service\BlocageController" class="App\Controller\Service\BlocageController" public="true" autowire="true" autoconfigure="true">
+      <tag name="controller.service_arguments"/>
+      <tag name="container.service_subscriber"/>
+      <call method="setContainer">
+        <argument type="service" id=".service_locator.vdmMuyE.App\Controller\Service\BlocageController"/>
+      </call>
+    </service>
     <service id="App\Controller\Service\DepotController" class="App\Controller\Service\DepotController" public="true" autowire="true" autoconfigure="true">
       <tag name="controller.service_arguments"/>
       <tag name="container.service_subscriber"/>
@@ -6223,6 +6230,9 @@
     <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\Agence\TransactionController" class="App\Controller\Agence\TransactionController" autowire="true" abstract="true"/>
     <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\Agence\TransactionController" class="App\Controller\Agence\TransactionController" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Controller\Agence\TransactionController" class="App\Controller\Agence\TransactionController" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\Service\BlocageController" class="App\Controller\Service\BlocageController" autowire="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\Service\BlocageController" class="App\Controller\Service\BlocageController" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Controller\Service\BlocageController" class="App\Controller\Service\BlocageController" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\Service\DepotController" class="App\Controller\Service\DepotController" autowire="true" abstract="true"/>
     <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\Service\DepotController" class="App\Controller\Service\DepotController" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Controller\Service\DepotController" class="App\Controller\Service\DepotController" autowire="true" autoconfigure="true" abstract="true"/>
@@ -6502,6 +6512,13 @@
         <argument key="validator" type="service" id="validator"/>
       </argument>
     </service>
+    <service id=".service_locator._K6lUNb" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="em" type="service" id="doctrine.orm.default_entity_manager"/>
+        <argument key="userRepos" type="service" id="App\Repository\UserRepository"/>
+      </argument>
+    </service>
     <service id=".service_locator.jVO0gae" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
       <argument type="collection">
@@ -6531,7 +6548,7 @@
         <argument key="postRepo" type="service" id="App\Repository\UserRepository"/>
       </argument>
     </service>
-    <service id=".service_locator.15p5_h." class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+    <service id=".service_locator.BhcM7lw" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="App\Controller\Agence\AffectationController::affectation" type="service" id=".service_locator.Nd7iKQx"/>
@@ -6539,6 +6556,7 @@
         <argument key="App\Controller\Agence\RetraitController::retrait" type="service" id=".service_locator.q7mS9Ka"/>
         <argument key="App\Controller\Agence\TransactionController::envoie" type="service" id=".service_locator.nDjs0HK"/>
         <argument key="App\Controller\Agence\TransactionController::retrait" type="service" id=".service_locator.EXTBCIa"/>
+        <argument key="App\Controller\Service\BlocageController::blocPartenaire" type="service" id=".service_locator._K6lUNb"/>
         <argument key="App\Controller\Service\DepotController::newDepot" type="service" id=".service_locator.jVO0gae"/>
         <argument key="App\Controller\Service\ExistedPartenaireController::newPartenaire" type="service" id=".service_locator.Tmqg_go"/>
         <argument key="App\Controller\Service\PartenaireController::newPartenaire" type="service" id=".service_locator.cTaQMUW"/>
@@ -6548,6 +6566,7 @@
         <argument key="App\Controller\Agence\RetraitController:retrait" type="service" id=".service_locator.q7mS9Ka"/>
         <argument key="App\Controller\Agence\TransactionController:envoie" type="service" id=".service_locator.nDjs0HK"/>
         <argument key="App\Controller\Agence\TransactionController:retrait" type="service" id=".service_locator.EXTBCIa"/>
+        <argument key="App\Controller\Service\BlocageController:blocPartenaire" type="service" id=".service_locator._K6lUNb"/>
         <argument key="App\Controller\Service\DepotController:newDepot" type="service" id=".service_locator.jVO0gae"/>
         <argument key="App\Controller\Service\ExistedPartenaireController:newPartenaire" type="service" id=".service_locator.Tmqg_go"/>
         <argument key="App\Controller\Service\PartenaireController:newPartenaire" type="service" id=".service_locator.cTaQMUW"/>
@@ -6725,6 +6744,12 @@
     <service id=".service_locator.vdmMuyE.App\Controller\Agence\TransactionController" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator_context" id="App\Controller\Agence\TransactionController"/>
       <argument>App\Controller\Agence\TransactionController</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.vdmMuyE" method="withContext"/>
+    </service>
+    <service id=".service_locator.vdmMuyE.App\Controller\Service\BlocageController" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+      <tag name="container.service_locator_context" id="App\Controller\Service\BlocageController"/>
+      <argument>App\Controller\Service\BlocageController</argument>
       <argument type="service" id="service_container"/>
       <factory service=".service_locator.vdmMuyE" method="withContext"/>
     </service>
@@ -6936,12 +6961,12 @@
       <argument type="service" id="security.token_storage"/>
     </service>
     <service id="debug.argument_resolver.service.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver" public="false">
-      <argument type="service" id=".service_locator.15p5_h."/>
+      <argument type="service" id=".service_locator.BhcM7lw"/>
     </service>
     <service id="debug.argument_resolver.default.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver" public="false"/>
     <service id="debug.argument_resolver.variadic.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\VariadicValueResolver" public="false"/>
     <service id="debug.argument_resolver.not_tagged_controller.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\NotTaggedControllerValueResolver" public="false">
-      <argument type="service" id=".service_locator.15p5_h."/>
+      <argument type="service" id=".service_locator.BhcM7lw"/>
     </service>
     <service id="api_platform.swagger.normalizer.api_gateway.inner" class="ApiPlatform\Core\Swagger\Serializer\DocumentationNormalizer" public="false">
       <argument type="service" id="api_platform.metadata.resource.metadata_factory.cached"/>
@@ -7387,7 +7412,7 @@
     <service id="sensio_framework_extra.security.expression_language" alias="sensio_framework_extra.security.expression_language.default" public="false"/>
     <service id="container.env_var_processors_locator" alias=".service_locator.CmORmuK" public="true"/>
     <service id="twig.loader.filesystem" alias="twig.loader.native_filesystem" public="false"/>
-    <service id="argument_resolver.controller_locator" alias=".service_locator.15p5_h."/>
+    <service id="argument_resolver.controller_locator" alias=".service_locator.BhcM7lw"/>
     <service id="twig.loader" alias="twig.loader.native_filesystem"/>
     <service id="api_platform.name_converter" alias="serializer.name_converter.metadata_aware"/>
     <service id="Symfony\Component\String\Slugger\SluggerInterface" alias="slugger"/>
