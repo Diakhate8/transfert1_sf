@@ -49,7 +49,7 @@ class EnvoieCrontrollerController extends AbstractController
             $telephoneB = $donneeRecu->telephoneCorrespondant ;
             $mode = $donneeRecu->mode ;
             $solde = $donneeRecu->solde ;
-            $jour = new \DateTime('now');
+            $jour = new \DateTime('Y/M/D');
 
         //MODE ENVOIE       
             if($mode=="envoie"){

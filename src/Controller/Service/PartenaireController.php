@@ -6,6 +6,7 @@ use App\Entity\Role;
 use App\Entity\User;
 use App\Entity\Depot;
 use App\Entity\Compte;
+use App\Entity\Contrat;
 use App\Entity\Partenaire;
 use App\Utule\CompteGenerator;
 use Doctrine\ORM\EntityManagerInterface;
@@ -102,6 +103,21 @@ class PartenaireController extends AbstractController
             //  dd($depot);
         $em->persist($depot);
         
+        $contrat = new Contrat();
+        $contratRepo=$this->getDoctrine()->getRepository(Contrat::class);
+        $entityCantrat = $contratRepo->findOneBy(array("id"=>1));
+        
+        $contrat->setIntitule(" Contrat:Entre les soussignés:\r\n ".$donneeRecu->prenom." ".$donneeRecu->prenom." 
+        et \r\n  ci-après dénommé le partenariat:Les Comptes du Partenaires\r\n 
+        il a été arrêté et convenu ce qui suit :\';\r\n  ")
+                ->setArticleA($entityCantrat->getArticleA())
+                ->setArticleB($entityCantrat->getArticleB())
+                ->setArticleC($entityCantrat->getArticleC())
+                ->setArticleD($entityCantrat->getArticleD())
+                ->setArticleE($entityCantrat->getArticleE());
+                dd($contrat);
+          $em->persist($contrat);
+
         $em->flush();
 
             $data= [

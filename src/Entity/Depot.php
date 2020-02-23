@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * @ApiResource()
@@ -25,6 +27,7 @@ class Depot
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotBlank
      */
     private $montantDepot;
 
@@ -36,6 +39,7 @@ class Depot
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Compte", inversedBy="depot")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotBlank
      */
     private $compte;
 

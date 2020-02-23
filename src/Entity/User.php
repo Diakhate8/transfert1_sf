@@ -85,6 +85,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255, unique=true)
      * @Groups({"post:read", "post:write"})
+     * @Assert\NotBlank(message="entrez username")
      */
     private $username;
 

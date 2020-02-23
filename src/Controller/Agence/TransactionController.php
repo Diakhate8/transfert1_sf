@@ -3,6 +3,7 @@
 namespace App\Controller\Agence;
 
 use App\Entity\Compte;
+use App\Entity\Rapport;
 use App\Utule\CalculFrais;
 use App\Entity\Transaction;
 use Doctrine\ORM\EntityManagerInterface;
@@ -102,7 +103,20 @@ class TransactionController extends AbstractController
                 $Entitycompte->setSoldeInitial($soldeCompte-$solde);
                 $Entitycompte->setNumeroCompte($compteEnv);
             // dd($Entitycompte);  ok
-
+                //Rapport
+                $rapport = new Rapport();
+                if($mode=="envoie"){
+                    $part=($frais*(10/100));
+                }
+                if($mode=="retrait"){
+                    $part=($frais*(20/100));
+                }
+                $rapport->setCompteTransact($Entitycompte)
+                        ->setCreatedAt($jour)  
+                        ->setPartAgence($part)
+                        ->setMode($mode)
+                        ; 
+                $em->persist($rapport);
             $em->flush();
 
             // if(!$Entitycompte){a

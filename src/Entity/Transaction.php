@@ -2,10 +2,11 @@
 
 namespace App\Entity;
 
-use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * @ApiResource()
@@ -24,24 +25,28 @@ class Transaction
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Groups({"post:read", "post:write"})
+     * @Assert\NotBlank
      */
     private $prenomEnv;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Groups({"post:read", "post:write"})
+     * @Assert\NotBlank
      */
     private $nomEnv;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
      * @Groups({"post:read", "post:write"})
+     * @Assert\Length(min=13, max=13)
      */
     private $ninCorrespondant;
 
     /**
      * @ORM\Column(type="integer")
      * @Groups({"post:read", "post:write"})
+     * @Assert\NotBlank
      * 
      */
     private $solde;
@@ -49,17 +54,20 @@ class Transaction
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Groups({"post:read", "post:write"})
+     * @Assert\NotBlank
      */
     private $prenomCorrespondant;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Groups({"post:read", "post:write"})
+     * @Assert\NotBlank
      */
     private $nomCorrespondant;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Compte", inversedBy="transacDepot")
+     * @Assert\NotBlank
      */
     private $compteDeDepot;
 
@@ -72,6 +80,7 @@ class Transaction
     /**
      * @ORM\Column(type="datetime")
      * @Groups({"post:read", "post:write"})
+     * @Assert\NotBlank
      */
     private $createdAt;
 
@@ -92,6 +101,7 @@ class Transaction
      * @ORM\Column(type="integer")
      * @Assert\Regex("/^(78||77||76||70)[0-9]{7}$/")
      * @Groups({"post:read", "post:write"})
+     * @Assert\NotBlank
      */
     private $telephoneEnv;
 
@@ -99,18 +109,22 @@ class Transaction
      * @ORM\Column(type="integer")
      * @Assert\Regex("/^(78||77||76||70)[0-9]{7}$/")
      * @Groups({"post:read", "post:write"})
+     * @Assert\NotBlank
      */
     private $telephoneCorrespondant;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"post:read", "post:write"})
+     * @Assert\NotBlank
      */
     private $mode;
 
     /**
      * @ORM\Column(type="integer")
      * @Groups({"post:read", "post:write"})
+     * @Assert\NotBlank
+     * @Assert\Length(min=13, max=13)
      */
     private $ninClient;
 
